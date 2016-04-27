@@ -55,36 +55,36 @@ describe("janky", function () {
         });
       }
     });
-  });
 
-  describe("without janky URL", function () {
-    beforeEach(function () {
-      robot = {
-        respond: sinon.spy(),
-        hear: sinon.spy(),
-        router: {
-          post: sinon.spy()
-        }
-      };
-
-      require('../src/janky')(robot);
-    });
-
-    for (let listener of listeners) {
-      it(`warns from the ${listener[0]} listener`, function() {
-        for (let i in robot.respond.args) {
-          if (robot.respond.args[i][0].toString() === listener[1].toString()) {
-            let msg = {
-              send: sinon.spy()
-            }
-            robot.respond.args[i][1](msg);
-            expect(msg.send).to.have.been.calledWith("The `HUBOT_JANKY_URL` environment variable is not set.");
-            return;
+    describe("without janky URL", function () {
+      beforeEach(function () {
+        robot = {
+          respond: sinon.spy(),
+          hear: sinon.spy(),
+          router: {
+            post: sinon.spy()
           }
-        }
-        assert(false);
+        };
+
+        require('../src/janky')(robot);
       });
-    }
+
+      for (let listener of listeners) {
+        it(`warns from the ${listener[0]} listener`, function() {
+          for (let i in robot.respond.args) {
+            if (robot.respond.args[i][0].toString() === listener[1].toString()) {
+              let msg = {
+                send: sinon.spy()
+              }
+              robot.respond.args[i][1](msg);
+              expect(msg.send).to.have.been.calledWith("The `HUBOT_JANKY_URL` environment variable is not set.");
+              return;
+            }
+          }
+          throw new Error(`${listener[0]} listener not registered`);
+        });
+      }
+    });
   });
 });
 
